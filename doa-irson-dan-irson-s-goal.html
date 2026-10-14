@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Doa Irson & Irson's Goal - Dashboard</title>
+    <title>Doa Irson & Irson's Goal - Interactive Dashboard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -19,873 +19,1006 @@
         },
       };
     </script>
-    <!-- Google Fonts Inter -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- FontAwesome for Icons -->
+    <!-- Font Awesome for Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <!-- Canvas Confetti for celebrations -->
+    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
       body {
         font-family: "Inter", sans-serif;
       }
-      .glass-card {
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+      .goal-card-hover {
+        transition: all 0.3s ease;
       }
-      @keyframes pulse-subtle {
+      .goal-card-hover:hover {
+        transform: translateY(-3px);
+        box-shadow:
+          0 10px 25px -5px rgba(37, 99, 235, 0.15),
+          0 8px 10px -6px rgba(37, 99, 235, 0.1);
+      }
+      @keyframes float {
         0%,
         100% {
-          transform: scale(1);
+          transform: translateY(0);
         }
         50% {
-          transform: scale(1.02);
+          transform: translateY(-5px);
         }
       }
-      .animate-pulse-subtle {
-        animation: pulse-subtle 4s ease-in-out infinite;
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
       }
     </style>
   </head>
   <body
-    class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300"
+    class="bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 min-h-screen transition-colors duration-300"
   >
-    <!-- Top Navigation & Controls -->
+    <!-- Top Navigation Bar -->
     <header
-      class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 glass-card border-b border-slate-200 dark:border-slate-800 px-4 py-3 shadow-sm"
+      class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 shadow-sm"
     >
-      <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <div
+        class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4"
+      >
         <div class="flex items-center space-x-3">
-          <div class="bg-blue-600 text-white p-2 rounded-xl shadow-md">
-            <i class="fa-solid fa-mountain-sun text-lg"></i>
+          <div
+            class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20"
+          >
+            <i class="fa-solid fa-compass text-lg"></i>
           </div>
           <div>
             <h1
-              class="font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-tight"
+              class="font-bold text-slate-900 dark:text-white text-lg leading-tight"
             >
-              Irson's Journey
+              Doa Irson & Goal
             </h1>
             <p class="text-xs text-slate-500 dark:text-slate-400">
-              United States & Future Goals Tracker
+              Pusat Impian & Pembelajaran
             </p>
           </div>
         </div>
 
-        <div class="flex items-center space-x-2">
-          <!-- Overall Progress Badge -->
-          <div
-            class="hidden sm:flex items-center bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 px-3 py-1.5 rounded-full text-xs font-semibold border border-blue-200 dark:border-blue-800"
+        <!-- Tab Navigations -->
+        <nav
+          class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-sm font-medium"
+        >
+          <button
+            onclick="switchTab('doa')"
+            id="btn-doa"
+            class="px-4 py-2 rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm"
           >
-            <i class="fa-solid fa-trophy mr-1.5"></i>
-            <span id="progress-text">0% Selesai</span>
-          </div>
+            <i class="fa-solid fa-hands-praying mr-2"></i>Doa Irson
+          </button>
+          <button
+            onclick="switchTab('goal')"
+            id="btn-goal"
+            class="px-4 py-2 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+          >
+            <i class="fa-solid fa-bullseye mr-2"></i>Irson's Goal
+          </button>
+          <button
+            onclick="switchTab('tracker')"
+            id="btn-tracker"
+            class="px-4 py-2 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+          >
+            <i class="fa-solid fa-graduation-cap mr-2"></i>Belajar
+          </button>
+        </nav>
 
-          <!-- Theme Toggle Button -->
+        <!-- Right Tools -->
+        <div class="flex items-center space-x-2">
+          <button
+            onclick="triggerAffirmation()"
+            class="px-3 py-2 text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/60 rounded-lg hover:bg-indigo-100 transition shadow-sm flex items-center gap-1.5"
+            title="Kata Motivasi Harian"
+          >
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span class="hidden sm:inline">Afirmasi</span>
+          </button>
           <button
             onclick="toggleDarkMode()"
-            aria-label="Toggle Dark Mode"
-            class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm"
+            class="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+            title="Ganti Tema"
           >
-            <i id="theme-icon" class="fa-solid fa-moon"></i>
+            <i class="fa-solid fa-moon dark:hidden"></i>
+            <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
           </button>
         </div>
       </div>
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-4xl mx-auto px-4 py-6 sm:py-10 space-y-10">
-      <!-- Hero / Welcome Banner -->
-      <section
-        class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden"
-      >
-        <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl">
-          <i class="fa-solid fa-flag-usa"></i>
-        </div>
-        <div class="relative z-10 max-w-xl">
+    <main class="max-w-4xl mx-auto px-4 py-8">
+      <!-- SECTION 1: DOA IRSON -->
+      <section id="tab-doa" class="space-y-6">
+        <div class="text-center max-w-xl mx-auto mb-8">
           <span
-            class="bg-blue-500/40 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block border border-blue-400/30"
+            class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider rounded-full mb-3"
+            >Doa & Kesehatan</span
           >
-            🇺🇸 United States & Family Vision
-          </span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3">
-            Doa Irson & Irson's Goal
+          <h2
+            class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+          >
+            Doa Irson
           </h2>
-          <p class="text-blue-100 text-sm sm:text-base leading-relaxed mb-6">
-            Pusat doa, fokus belajar web development & bahasa, serta impian masa
-            depan tinggal bahagia bersama Papi, Mami, dan Kelly di Amerika
-            Serikat.
+          <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm">
+            Doa dan harapan harian untuk kesehatan, keluarga, dan ketenangan
+            hidup.
           </p>
-          <div class="flex flex-wrap gap-3">
+        </div>
+
+        <div class="grid gap-4">
+          <!-- Card 1 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm relative overflow-hidden flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-ear-listen text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Pendengaran Sehat
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  Telinga aku semuanya good listening, sembuh, bisa mendengar
+                  lebih jelas.
+                </p>
+              </div>
+            </div>
             <button
-              onclick="scrollToSection('doa-section')"
-              class="bg-white text-blue-900 font-semibold text-sm px-5 py-2.5 rounded-xl shadow hover:bg-blue-50 transition"
+              onclick="speakText(this)"
+              data-text="Telinga aku semuanya good listening, sembuh, bisa mendengar lebih jelas."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
             >
-              <i class="fa-solid fa-hands-praying mr-2 text-blue-600"></i> Baca
-              Doa Irson
-            </button>
-            <button
-              onclick="scrollToSection('goals-section')"
-              class="bg-blue-600/60 border border-blue-300/40 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-blue-600 transition"
-            >
-              <i class="fa-solid fa-bullseye mr-2"></i> Lihat Irson's Goal
+              <i class="fa-solid fa-volume-high"></i>
             </button>
           </div>
+
+          <!-- Card 2 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm relative overflow-hidden flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-child-reaching text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Tubuh Sempurna & Sehat
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  Tubuh aku semuanya lengkap, sempurna, berfungsi dengan baik,
+                  dan normal.
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="Tubuh aku semuanya lengkap, sempurna, berfungsi dengan baik, dan normal."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+
+          <!-- Card 3 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm relative overflow-hidden flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-house-user text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Keluarga & Kehidupan Sederhana
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  Single, tidak ada cewek, tinggal bareng papi, mami, dan Kelly,
+                  gak usah pikir cewek lagi.
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="Single, tidak ada cewek, tinggal bareng papi, mami, dan Kelly, gak usah pikir cewek lagi."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+
+          <!-- Card 4 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm relative overflow-hidden flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-earth-americas text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Tinggal di United States
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  Tuhan sudah kasih kita tinggal di negara yang paling bagus
+                  untuk kita adalah tinggal di Amerika (United States), gak usah
+                  pindah, gak usah pikir negara lain lagi.
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="Tuhan sudah kasih kita tinggal di negara yang paling bagus untuk kita adalah tinggal di Amerika, United States, gak usah pindah, gak usah pikir negara lain lagi."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Focus Cards Grid -->
+        <div class="grid md:grid-cols-2 gap-6 mt-8">
+          <div
+            class="bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-2xl p-6"
+          >
+            <h3
+              class="font-bold text-blue-900 dark:text-blue-200 mb-4 flex items-center gap-2"
+            >
+              <i
+                class="fa-solid fa-book-open text-blue-600 dark:text-blue-400"
+              ></i>
+              Aku mau fokus belajar:
+            </h3>
+            <ul class="space-y-2.5">
+              <li
+                class="flex items-center gap-3 bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-blue-100 dark:border-blue-900/40 font-medium text-slate-800 dark:text-slate-200 text-sm"
+              >
+                <span
+                  class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center shrink-0"
+                  >1</span
+                >
+                Web Development
+              </li>
+              <li
+                class="flex items-center gap-3 bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-blue-100 dark:border-blue-900/40 font-medium text-slate-800 dark:text-slate-200 text-sm"
+              >
+                <span
+                  class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center shrink-0"
+                  >2</span
+                >
+                English
+              </li>
+              <li
+                class="flex items-center gap-3 bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-blue-100 dark:border-blue-900/40 font-medium text-slate-800 dark:text-slate-200 text-sm"
+              >
+                <span
+                  class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center shrink-0"
+                  >3</span
+                >
+                Mandarin Chinese
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class="bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 rounded-2xl p-6"
+          >
+            <h3
+              class="font-bold text-indigo-900 dark:text-indigo-200 mb-4 flex items-center gap-2"
+            >
+              <i
+                class="fa-solid fa-rocket text-indigo-600 dark:text-indigo-400"
+              ></i>
+              Nanti belajar:
+            </h3>
+            <ul class="space-y-2.5">
+              <li
+                class="flex items-center gap-3 bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-indigo-100 dark:border-indigo-900/40 font-medium text-slate-800 dark:text-slate-200 text-sm"
+              >
+                <span
+                  class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center shrink-0"
+                  >1</span
+                >
+                AI (Artificial Intelligence)
+              </li>
+              <li
+                class="flex items-center gap-3 bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-indigo-100 dark:border-indigo-900/40 font-medium text-slate-800 dark:text-slate-200 text-sm"
+              >
+                <span
+                  class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center shrink-0"
+                  >2</span
+                >
+                Video Editing
+              </li>
+              <li
+                class="flex items-center gap-3 bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-indigo-100 dark:border-indigo-900/40 font-medium text-slate-800 dark:text-slate-200 text-sm"
+              >
+                <span
+                  class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center shrink-0"
+                  >3</span
+                >
+                Social Media
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Footer Notes -->
+        <div
+          class="bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 text-center text-sm text-slate-600 dark:text-slate-400 space-y-2 mt-8"
+        >
+          <p class="font-medium text-slate-900 dark:text-white">
+            Yang ini semuanya benar banget di Doa Irson.
+          </p>
+          <p>Papi, mami, aku, dan Kelly semuanya ingat banget di Doa Irson.</p>
+          <p class="text-blue-600 dark:text-blue-400 font-semibold pt-1">
+            Irson's Goal bahasnya kalo aku sudah selesai belajar Web
+            Development.
+          </p>
         </div>
       </section>
-
-      <!-- SECTION 1: DOA IRSON -->
-      <div id="doa-section" class="space-y-6">
-        <div
-          class="flex items-center space-x-3 border-b border-slate-200 dark:border-slate-800 pb-3"
-        >
-          <div
-            class="p-2 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg"
-          >
-            <i class="fa-solid fa-heart-pulse text-lg"></i>
-          </div>
-          <div>
-            <h3
-              class="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-wider"
-            >
-              Doa Irson
-            </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">
-              Kesehatan tubuh, ketenangan pikiran, dan tempat tinggal terbaik
-            </p>
-          </div>
-        </div>
-
-        <!-- Personal Wellness & Family Goals (Checklist / Interactive Cards) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer"
-            onclick="toggleCheckbox(this)"
-          >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-blue-600 rounded border-slate-300 dark:border-slate-700 focus:ring-blue-500 pointer-events-none"
-                data-id="prayer-1"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
-              >
-                Pendengaran & Tubuh Sehat
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                Telinga aku semuanya good listening, sembuh, bisa mendengar
-                lebih jelas. Tubuh aku semuanya lengkap, sempurna, berfungsi
-                dengan baik, dan normal.
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer"
-            onclick="toggleCheckbox(this)"
-          >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-blue-600 rounded border-slate-300 dark:border-slate-700 focus:ring-blue-500 pointer-events-none"
-                data-id="prayer-2"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
-              >
-                Fokus Keluarga Bersama
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                Single, tidak ada cewek, tinggal bareng papi, mami, dan Kelly,
-                gak usah pikir cewek lagi.
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer sm:col-span-2"
-            onclick="toggleCheckbox(this)"
-          >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-blue-600 rounded border-slate-300 dark:border-slate-700 focus:ring-blue-500 pointer-events-none"
-                data-id="prayer-3"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
-              >
-                Tinggal di Amerika Serikat
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                Tuhan sudah kasih kita tinggal di negara yang paling bagus untuk
-                kita adalah tinggal di Amerika (United States), gak usah pindah,
-                gak usah pikir negara lain lagi.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Learning Milestones (Interactive Checklists) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-          <!-- Primary Focus Card -->
-          <div
-            class="bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50 rounded-2xl p-6 shadow-sm"
-          >
-            <h4
-              class="font-bold text-blue-900 dark:text-blue-200 text-base mb-4 flex items-center"
-            >
-              <i class="fa-solid fa-book-open mr-2 text-blue-600"></i> Aku mau
-              fokus belajar:
-            </h4>
-            <div class="space-y-3">
-              <label
-                class="flex items-center space-x-3 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 cursor-pointer hover:bg-blue-50/50 transition"
-              >
-                <input
-                  type="checkbox"
-                  class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                  data-id="learn-web"
-                  onchange="updateProgress()"
-                />
-                <span
-                  class="font-semibold text-slate-800 dark:text-slate-200 text-sm"
-                  >1. Web Development</span
-                >
-              </label>
-              <label
-                class="flex items-center space-x-3 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 cursor-pointer hover:bg-blue-50/50 transition"
-              >
-                <input
-                  type="checkbox"
-                  class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                  data-id="learn-english"
-                  onchange="updateProgress()"
-                />
-                <span
-                  class="font-semibold text-slate-800 dark:text-slate-200 text-sm"
-                  >2. English</span
-                >
-              </label>
-              <label
-                class="flex items-center space-x-3 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 cursor-pointer hover:bg-blue-50/50 transition"
-              >
-                <input
-                  type="checkbox"
-                  class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                  data-id="learn-mandarin"
-                  onchange="updateProgress()"
-                />
-                <span
-                  class="font-semibold text-slate-800 dark:text-slate-200 text-sm"
-                  >3. Mandarin Chinese</span
-                >
-              </label>
-            </div>
-          </div>
-
-          <!-- Secondary Learning Card -->
-          <div
-            class="bg-indigo-50/70 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/50 rounded-2xl p-6 shadow-sm"
-          >
-            <h4
-              class="font-bold text-indigo-900 dark:text-indigo-200 text-base mb-4 flex items-center"
-            >
-              <i class="fa-solid fa-graduation-cap mr-2 text-indigo-600"></i>
-              Nanti belajar:
-            </h4>
-            <div class="space-y-3">
-              <label
-                class="flex items-center space-x-3 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-indigo-100 dark:border-slate-800 cursor-pointer hover:bg-indigo-50/50 transition"
-              >
-                <input
-                  type="checkbox"
-                  class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
-                  data-id="later-ai"
-                  onchange="updateProgress()"
-                />
-                <span
-                  class="font-semibold text-slate-800 dark:text-slate-200 text-sm"
-                  >1. AI (Artificial Intelligence)</span
-                >
-              </label>
-              <label
-                class="flex items-center space-x-3 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-indigo-100 dark:border-slate-800 cursor-pointer hover:bg-indigo-50/50 transition"
-              >
-                <input
-                  type="checkbox"
-                  class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
-                  data-id="later-video"
-                  onchange="updateProgress()"
-                />
-                <span
-                  class="font-semibold text-slate-800 dark:text-slate-200 text-sm"
-                  >2. Video Editing</span
-                >
-              </label>
-              <label
-                class="flex items-center space-x-3 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-indigo-100 dark:border-slate-800 cursor-pointer hover:bg-indigo-50/50 transition"
-              >
-                <input
-                  type="checkbox"
-                  class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
-                  data-id="later-social"
-                  onchange="updateProgress()"
-                />
-                <span
-                  class="font-semibold text-slate-800 dark:text-slate-200 text-sm"
-                  >3. Social Media</span
-                >
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Doa Footer Note -->
-        <div
-          class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 text-center text-xs sm:text-sm text-slate-600 dark:text-slate-400 space-y-1"
-        >
-          <p>
-            <i class="fa-solid fa-circle-check text-blue-600 mr-1.5"></i> Yang
-            ini semuanya benar banget di Doa Irson.
-          </p>
-          <p>
-            <i class="fa-solid fa-users text-blue-600 mr-1.5"></i> Papi, mami,
-            aku, dan Kelly semuanya ingat banget di Doa Irson.
-          </p>
-          <p class="font-medium text-slate-800 dark:text-slate-200 pt-1">
-            <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Irson's
-            Goal bahasnya kalo aku sudah selesai belajar Web Development.
-          </p>
-        </div>
-      </div>
-
-      <hr
-        class="border-t border-dashed border-slate-300 dark:border-slate-800 my-8"
-      />
 
       <!-- SECTION 2: IRSON'S GOAL -->
-      <div id="goals-section" class="space-y-6">
-        <div
-          class="flex items-center space-x-3 border-b border-slate-200 dark:border-slate-800 pb-3"
-        >
-          <div
-            class="p-2 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg"
+      <section id="tab-goal" class="space-y-6 hidden">
+        <div class="text-center max-w-xl mx-auto mb-8">
+          <span
+            class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider rounded-full mb-3"
+            >Masa Depan & Impian</span
           >
-            <i class="fa-solid fa-bullseye text-lg"></i>
-          </div>
-          <div>
-            <h3
-              class="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-wider"
-            >
-              Irson's Goal
-            </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">
-              Impian karier, kesehatan Nainai, rumah idaman di Queens, dan
-              perjalanan dunia
-            </p>
-          </div>
+          <h2
+            class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+          >
+            Irson's Goal
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm">
+            Target karier, tempat tinggal, keluarga, dan visi masa depan di
+            Amerika Serikat.
+          </p>
         </div>
 
-        <!-- Goals Cards Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid gap-4">
+          <!-- Goal Card 1 -->
           <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer"
-            onclick="toggleCheckbox(this)"
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-start justify-between gap-4"
           >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-indigo-600 rounded border-slate-300 dark:border-slate-700 focus:ring-indigo-500 pointer-events-none"
-                data-id="goal-remote"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5"
               >
-                Pekerjaan Impian US
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                Aku mau kerja remote di perusahaan Amerika (United States).
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer"
-            onclick="toggleCheckbox(this)"
-          >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-indigo-600 rounded border-slate-300 dark:border-slate-700 focus:ring-indigo-500 pointer-events-none"
-                data-id="goal-nainai"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
-              >
-                Kesehatan Nainai
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                Berobat nainai di Amerika (United States), biar nainai
-                sehat-sehat, nainai bisa panjang umur.
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer"
-            onclick="toggleCheckbox(this)"
-          >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-indigo-600 rounded border-slate-300 dark:border-slate-700 focus:ring-indigo-500 pointer-events-none"
-                data-id="goal-tesla"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
-              >
-                Mobil Tesla
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                Beli mobil Tesla, biar bisa jalan-jalan keliling Amerika (United
-                States).
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer"
-            onclick="toggleCheckbox(this)"
-          >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-indigo-600 rounded border-slate-300 dark:border-slate-700 focus:ring-indigo-500 pointer-events-none"
-                data-id="goal-house"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
-              >
-                Rumah Idaman di Queens
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                Beli rumah di 83-45 Vietor Avenue, Elmhurst, Queens, New York,
-                tinggal di Amerika (United States), negara no.1 paling bagus,
-                gak usah pindah rumah lagi.
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer"
-            onclick="toggleCheckbox(this)"
-          >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-indigo-600 rounded border-slate-300 dark:border-slate-700 focus:ring-indigo-500 pointer-events-none"
-                data-id="goal-cities"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
-              >
-                Koneksi Global US & China
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                United States sudah kayak China, karena Elmhurst, Queens, New
-                York sudah kayak Guangzhou; Manhattan, New York sudah kayak
-                Shanghai; Silicon Valley, California sudah kayak Shenzhen, gak
-                usah ke China lagi.
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer"
-            onclick="toggleCheckbox(this)"
-          >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-indigo-600 rounded border-slate-300 dark:border-slate-700 focus:ring-indigo-500 pointer-events-none"
-                data-id="goal-travel"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
-              >
-                Keliling Dunia 2 Negara
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                Kita tinggal, jalan-jalan, dan keliling dunia di Amerika (United
-                States), jenguk keluarga di Indonesia, 2 negara saja, gak usah
-                jalan-jalan ke luar negeri lagi.
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="goal-interactive-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex items-start space-x-4 cursor-pointer sm:col-span-2"
-            onclick="toggleCheckbox(this)"
-          >
-            <div class="mt-1 flex-shrink-0">
-              <input
-                type="checkbox"
-                class="w-5 h-5 text-indigo-600 rounded border-slate-300 dark:border-slate-700 focus:ring-indigo-500 pointer-events-none"
-                data-id="goal-countries"
-              />
-            </div>
-            <div class="flex-1">
-              <h4
-                class="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1"
-              >
-                Negara Utama Kita
-              </h4>
-              <p
-                class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed"
-              >
-                United States adalah negara maju kita, Indonesia adalah negara
-                berkembang kita, gak usah ranking countries lagi.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Negara Fokus Card -->
-        <div
-          class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-200 dark:border-blue-900/50 rounded-2xl p-6 shadow-sm"
-        >
-          <h4
-            class="font-bold text-slate-900 dark:text-white text-base mb-4 flex items-center"
-          >
-            <i class="fa-solid fa-earth-americas mr-2 text-blue-600"></i> Negara
-            yang paling bagus untuk Irson's Goal adalah:
-          </h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div
-              class="flex items-center space-x-3 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"
-            >
-              <span class="text-2xl">🇺🇸</span>
+                <i class="fa-solid fa-laptop-code text-lg"></i>
+              </div>
               <div>
-                <div class="font-bold text-slate-900 dark:text-white text-sm">
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Remote Work Amerika
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  Aku mau kerja remote di perusahaan Amerika (United States).
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="Aku mau kerja remote di perusahaan Amerika, United States."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+
+          <!-- Goal Card 2 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-heart-pulse text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Kesehatan Nainai
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  Berobat nainai di Amerika (United States), biar nainai
+                  sehat-sehat, nainai bisa panjang umur.
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="Berobat nainai di Amerika, United States, biar nainai sehat-sehat, nainai bisa panjang umur."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+
+          <!-- Goal Card 3 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-car text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Mobil Tesla
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  Beli mobil Tesla, biar bisa jalan-jalan keliling Amerika
+                  (United States).
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="Beli mobil Tesla, biar bisa jalan-jalan keliling Amerika, United States."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+
+          <!-- Goal Card 4 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-house-chimney text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Rumah Impian di Queens
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  Beli rumah di
+                  <strong
+                    >83-45 Vietor Avenue, Elmhurst, Queens, New York</strong
+                  >, tinggal di Amerika (United States), negara no.1 paling
+                  bagus, gak usah pindah rumah lagi.
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="Beli rumah di 83-45 Vietor Avenue, Elmhurst, Queens, New York, tinggal di Amerika, United States."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+
+          <!-- Goal Card 5 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-city text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Koneksi Global
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  United States sudah kayak China, karena Elmhurst, Queens, New
+                  York sudah kayak Guangzhou; Manhattan, New York sudah kayak
+                  Shanghai; Silicon Valley, California sudah kayak Shenzhen, gak
+                  usah ke China lagi.
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="United States sudah kayak China, karena Elmhurst, Queens, New York sudah kayak Guangzhou; Manhattan sudah kayak Shanghai; Silicon Valley sudah kayak Shenzhen."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+
+          <!-- Goal Card 6 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/50 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-plane-departure text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Keliling Dunia (2 Negara Saja)
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  Kita tinggal, jalan-jalan, dan keliling dunia di Amerika
+                  (United States), jenguk keluarga di Indonesia, 2 negara saja,
+                  gak usah jalan-jalan ke luar negeri lagi.
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="Kita tinggal dan keliling dunia di Amerika, United States, jenguk keluarga di Indonesia, dua negara saja."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+
+          <!-- Goal Card 7 -->
+          <div
+            class="goal-card goal-card-hover bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex items-start justify-between gap-4"
+          >
+            <div class="flex items-start space-x-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i class="fa-solid fa-flag text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white mb-1">
+                  Negara Utama Kita
+                </h3>
+                <p
+                  class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"
+                >
+                  United States adalah negara maju kita, Indonesia adalah negara
+                  berkembang kita, gak usah ranking countries lagi.
+                </p>
+              </div>
+            </div>
+            <button
+              onclick="speakText(this)"
+              data-text="United States adalah negara maju kita, Indonesia adalah negara berkembang kita, gak usah ranking countries lagi."
+              class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-2"
+              title="Dengarkan Suara"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Target Countries Banner -->
+        <div
+          class="bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 rounded-2xl p-6 mt-6"
+        >
+          <h3
+            class="font-bold text-indigo-900 dark:text-indigo-200 mb-4 flex items-center gap-2"
+          >
+            <i
+              class="fa-solid fa-globe text-indigo-600 dark:text-indigo-400"
+            ></i>
+            Negara yang paling bagus untuk Irson's Goal adalah:
+          </h3>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div
+              class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/40 flex items-center space-x-3 shadow-sm"
+            >
+              <span class="text-3xl">🇺🇸</span>
+              <div>
+                <div class="font-bold text-slate-900 dark:text-white">
                   United States
                 </div>
-                <div class="text-xs text-slate-500 dark:text-slate-400">
-                  Negara maju utama & tempat tinggal
+                <div class="text-xs text-slate-500">
+                  Negara Maju Utama / Tempat Tinggal
                 </div>
               </div>
             </div>
             <div
-              class="flex items-center space-x-3 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"
+              class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/40 flex items-center space-x-3 shadow-sm"
             >
-              <span class="text-2xl">🇮🇩</span>
+              <span class="text-3xl">🇮🇩</span>
               <div>
-                <div class="font-bold text-slate-900 dark:text-white text-sm">
+                <div class="font-bold text-slate-900 dark:text-white">
                   Indonesia
                 </div>
-                <div class="text-xs text-slate-500 dark:text-slate-400">
-                  Negara berkembang & jenguk keluarga
+                <div class="text-xs text-slate-500">
+                  Negara Berkembang / Kunjungan Keluarga
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Goal Footer -->
+        <!-- Footer Goals -->
         <div
-          class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 text-center text-xs sm:text-sm text-slate-600 dark:text-slate-400 space-y-1"
+          class="bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 text-center text-sm text-slate-600 dark:text-slate-400 space-y-2 mt-8"
         >
-          <p>
-            <i class="fa-solid fa-star text-amber-500 mr-1.5"></i> Aku mau yang
-            ini bisa jadi real di masa depan di Irson's Goal.
+          <p class="font-medium text-slate-900 dark:text-white">
+            Aku mau yang ini bisa jadi real di masa depan di Irson's Goal.
           </p>
-          <p>
-            <i class="fa-solid fa-sparkles text-amber-500 mr-1.5"></i> Aku mau
-            impian ini bisa tercapai di Irson's Goal.
+          <p class="text-indigo-600 dark:text-indigo-400 font-semibold pt-1">
+            Aku mau impian ini bisa tercapai di Irson's Goal.
           </p>
         </div>
-      </div>
-
-      <!-- Reflection Notes Section -->
-      <section
-        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4"
-      >
-        <div class="flex items-center justify-between">
-          <h3
-            class="font-bold text-slate-900 dark:text-white text-base sm:text-lg flex items-center"
-          >
-            <i class="fa-solid fa-pen-nib mr-2 text-blue-600"></i> Catatan
-            Refleksi & Catatan Harian Irson
-          </h3>
-          <button
-            onclick="saveNotes()"
-            class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm"
-          >
-            <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Catatan
-          </button>
-        </div>
-        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-          Tuliskan progres harianmu dalam belajar Web Development, bahasa, atau
-          persiapan menuju Amerika Serikat di sini:
-        </p>
-        <textarea
-          id="irson-notes"
-          rows="4"
-          class="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-y"
-          placeholder="Hari ini saya belajar... Semangat untuk impian di US!"
-        ></textarea>
       </section>
 
-      <!-- Footer -->
-      <footer
-        class="text-center py-6 text-xs text-slate-500 dark:text-slate-400 space-y-2 border-t border-slate-200 dark:border-slate-800"
-      >
-        <p>
-          Doa Irson & Irson's Goal • Dibuat dengan penuh semangat dan keyakinan
-          untuk masa depan yang gemilang.
-        </p>
-        <button
-          onclick="resetAllData()"
-          class="text-red-500 hover:text-red-600 dark:text-red-400 font-medium underline"
+      <!-- SECTION 3: INTERACTIVE LEARNING TRACKER -->
+      <section id="tab-tracker" class="space-y-6 hidden">
+        <div class="text-center max-w-xl mx-auto mb-8">
+          <span
+            class="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider rounded-full mb-3"
+            >Progress Pembelajaran</span
+          >
+          <h2
+            class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+          >
+            Interactive Checklist
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm">
+            Centang mata pelajaran yang sudah kamu pelajari. Data otomatis
+            tersimpan!
+          </p>
+        </div>
+
+        <!-- Progress Bar Card -->
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm"
         >
-          Reset Semua Progres
-        </button>
-      </footer>
+          <div class="flex justify-between items-center mb-2">
+            <span
+              class="font-semibold text-slate-800 dark:text-slate-200 text-sm"
+              >Progress Total Belajar</span
+            >
+            <span
+              id="progress-text"
+              class="text-sm font-bold text-blue-600 dark:text-blue-400"
+              >0%</span
+            >
+          </div>
+          <div
+            class="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden"
+          >
+            <div
+              id="progress-bar"
+              class="bg-blue-600 h-full w-0 transition-all duration-500 rounded-full"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Focus Learning List -->
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4"
+        >
+          <h3
+            class="font-bold text-slate-900 dark:text-white text-base border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-list-check text-blue-600"></i> Fokus Utama
+            Belajar
+          </h3>
+          <div id="checklist-primary" class="space-y-3">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Future Learning List -->
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4"
+        >
+          <h3
+            class="font-bold text-slate-900 dark:text-white text-base border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-list-check text-indigo-600"></i> Nanti Belajar
+            (Selanjutnya)
+          </h3>
+          <div id="checklist-secondary" class="space-y-3">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </section>
     </main>
 
-    <!-- Interactive Script -->
-    <script>
-      // Load saved state on window load
-      window.onload = function () {
-        loadSavedData();
-        updateProgress();
-      };
+    <!-- Footer -->
+    <footer
+      class="max-w-4xl mx-auto px-4 py-10 mt-12 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400"
+    >
+      <p class="font-medium text-slate-600 dark:text-slate-400 mb-1">
+        Doa Irson & Irson's Goal Dashboard
+      </p>
+      <p>
+        Semoga semua doa dan impian Irson, Papi, Mami, Kelly, dan Nainai
+        tercapai dengan sempurna. Aamiin.
+      </p>
+    </footer>
 
-      // Toggle Dark Mode
+    <!-- Affirmation Modal -->
+    <div
+      id="affirmation-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-4"
+    >
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl relative animate-float"
+      >
+        <button
+          onclick="closeAffirmation()"
+          class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+        >
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+        <div
+          class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl mb-4"
+        >
+          <i class="fa-solid fa-quote-left"></i>
+        </div>
+        <h3 class="font-bold text-slate-900 dark:text-white text-lg mb-2">
+          Afirmasi Harian Irson
+        </h3>
+        <p
+          id="affirmation-text"
+          class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-6"
+        >
+          Loading...
+        </p>
+        <div class="flex justify-end">
+          <button
+            onclick="triggerAffirmation()"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-md shadow-blue-500/20 transition"
+          >
+            <i class="fa-solid fa-rotate mr-1.5"></i> Kata Lainnya
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+      // Tab Switching Logic
+      function switchTab(tabName) {
+        const tabs = ["doa", "goal", "tracker"];
+        tabs.forEach((t) => {
+          const section = document.getElementById(`tab-${t}`);
+          const btn = document.getElementById(`btn-${t}`);
+          if (t === tabName) {
+            section.classList.remove("hidden");
+            btn.className =
+              "px-4 py-2 rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm font-medium";
+          } else {
+            section.classList.add("hidden");
+            btn.className =
+              "px-4 py-2 rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium";
+          }
+        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // Dark Mode Toggle
       function toggleDarkMode() {
-        const htmlEl = document.documentElement;
-        const iconEl = document.getElementById("theme-icon");
-        if (htmlEl.classList.contains("dark")) {
-          htmlEl.classList.remove("dark");
+        const html = document.documentElement;
+        if (html.classList.contains("dark")) {
+          html.classList.remove("dark");
           localStorage.setItem("theme", "light");
-          iconEl.className = "fa-solid fa-moon";
         } else {
-          htmlEl.classList.add("dark");
+          html.classList.add("dark");
           localStorage.setItem("theme", "dark");
-          iconEl.className = "fa-solid fa-sun";
         }
       }
 
-      // Check system preference on init
+      // Initialize Theme from localStorage
       if (
         localStorage.getItem("theme") === "dark" ||
         (!localStorage.getItem("theme") &&
           window.matchMedia("(prefers-color-scheme: dark)").matches)
       ) {
         document.documentElement.classList.add("dark");
-        document.getElementById("theme-icon").className = "fa-solid fa-sun";
       }
 
-      // Toggle Checkbox from card click
-      function toggleCheckbox(cardEl) {
-        const checkbox = cardEl.querySelector('input[type="checkbox"]');
-        if (checkbox) {
-          checkbox.checked = !checkbox.checked;
+      // Text-to-Speech Helper
+      function speakText(btn) {
+        const text = btn.getAttribute("data-text");
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = "id-ID";
+          utterance.rate = 0.95;
 
-          // Visual feedback on card
-          if (checkbox.checked) {
-            cardEl.classList.add(
-              "border-blue-500",
-              "bg-blue-50/30",
-              "dark:bg-blue-950/20",
-            );
-            triggerConfetti();
-          } else {
-            cardEl.classList.remove(
-              "border-blue-500",
-              "bg-blue-50/30",
-              "dark:bg-blue-950/20",
-            );
-          }
+          // Visual feedback
+          const icon = btn.querySelector("i");
+          icon.className =
+            "fa-solid fa-volume-high text-blue-600 animate-pulse";
+          utterance.onend = () => {
+            icon.className = "fa-solid fa-volume-high";
+          };
 
-          saveData();
-          updateProgress();
+          window.speechSynthesis.speak(utterance);
+        } else {
+          alert("Maaf, fitur suara tidak didukung di browser ini.");
         }
       }
 
-      // Update progress bar and percentage text
-      function updateProgress() {
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        let total = checkboxes.length;
-        let checked = 0;
+      // Learning Checklist Data & Logic
+      const learningItems = {
+        primary: [
+          {
+            id: "web_dev",
+            title: "Web Development",
+            desc: "HTML, CSS, JavaScript, dan membangun aplikasi web.",
+          },
+          {
+            id: "english",
+            title: "English",
+            desc: "Meningkatkan kemampuan bahasa Inggris untuk komunikasi & karier.",
+          },
+          {
+            id: "mandarin",
+            title: "Mandarin Chinese",
+            desc: "Belajar bahasa Mandarin untuk koneksi global.",
+          },
+        ],
+        secondary: [
+          {
+            id: "ai",
+            title: "AI (Artificial Intelligence)",
+            desc: "Memanfaatkan teknologi AI modern untuk produktivitas.",
+          },
+          {
+            id: "video_editing",
+            title: "Video Editing",
+            desc: "Mengedit video kreatif untuk media sosial dan dokumentasi.",
+          },
+          {
+            id: "social_media",
+            title: "Social Media",
+            desc: "Memahami platform sosial media dan digital footprint.",
+          },
+        ],
+      };
 
-        checkboxes.forEach((cb) => {
-          if (cb.checked) {
-            checked++;
-            // If parent card exists, add highlight style
-            const card = cb.closest(".goal-interactive-card");
-            if (card) {
-              card.classList.add(
-                "border-blue-500",
-                "bg-blue-50/30",
-                "dark:bg-blue-950/20",
-              );
-            }
-          } else {
-            const card = cb.closest(".goal-interactive-card");
-            if (card) {
-              card.classList.remove(
-                "border-blue-500",
-                "bg-blue-50/30",
-                "dark:bg-blue-950/20",
-              );
-            }
-          }
+      function loadChecklist() {
+        const savedProgress =
+          JSON.parse(localStorage.getItem("irson_learning_progress")) || {};
+
+        // Primary
+        const primaryContainer = document.getElementById("checklist-primary");
+        primaryContainer.innerHTML = "";
+        learningItems.primary.forEach((item) => {
+          const isChecked = savedProgress[item.id] || false;
+          primaryContainer.innerHTML += `
+            <label class="flex items-start space-x-3 p-3.5 rounded-xl border ${isChecked ? "bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900/50" : "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800"} cursor-pointer transition hover:border-blue-300">
+              <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleCheck('${item.id}')" class="mt-1 w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+              <div class="flex-1">
+                <div class="font-semibold text-slate-800 dark:text-slate-200 text-sm ${isChecked ? "line-through text-slate-400 dark:text-slate-500" : ""}">${item.title}</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${item.desc}</div>
+              </div>
+            </label>
+          `;
         });
 
-        const percentage = total > 0 ? Math.round((checked / total) * 100) : 0;
-        document.getElementById("progress-text").innerText =
-          `${percentage}% Selesai (${checked}/${total})`;
-      }
-
-      // Trigger Confetti effect
-      function triggerConfetti() {
-        confetti({
-          particleCount: 40,
-          spread: 60,
-          origin: { y: 0.8 },
-          colors: ["#2563eb", "#1e3a8a", "#60a5fa", "#3b82f6"],
+        // Secondary
+        const secondaryContainer = document.getElementById(
+          "checklist-secondary",
+        );
+        secondaryContainer.innerHTML = "";
+        learningItems.secondary.forEach((item) => {
+          const isChecked = savedProgress[item.id] || false;
+          secondaryContainer.innerHTML += `
+            <label class="flex items-start space-x-3 p-3.5 rounded-xl border ${isChecked ? "bg-indigo-50/50 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-900/50" : "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800"} cursor-pointer transition hover:border-indigo-300">
+              <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleCheck('${item.id}')" class="mt-1 w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+              <div class="flex-1">
+                <div class="font-semibold text-slate-800 dark:text-slate-200 text-sm ${isChecked ? "line-through text-slate-400 dark:text-slate-500" : ""}">${item.title}</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${item.desc}</div>
+              </div>
+            </label>
+          `;
         });
+
+        updateProgressBar();
       }
 
-      // Save Data to localStorage
-      function saveData() {
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        const state = {};
-        checkboxes.forEach((cb) => {
-          const id = cb.getAttribute("data-id");
-          if (id) {
-            state[id] = cb.checked;
-          }
-        });
-        localStorage.setItem("irson_goals_state", JSON.stringify(state));
-      }
+      function toggleCheck(id) {
+        const savedProgress =
+          JSON.parse(localStorage.getItem("irson_learning_progress")) || {};
+        savedProgress[id] = !savedProgress[id];
+        localStorage.setItem(
+          "irson_learning_progress",
+          JSON.stringify(savedProgress),
+        );
 
-      function saveNotes() {
-        const notes = document.getElementById("irson-notes").value;
-        localStorage.setItem("irson_notes", notes);
-
-        // Brief toast notification
-        const btn = event.target.closest("button");
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Tersimpan!';
-        btn.classList.add("bg-green-600");
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.classList.remove("bg-green-600");
-        }, 2000);
-      }
-
-      // Load Saved Data from localStorage
-      function loadSavedData() {
-        const savedState = localStorage.getItem("irson_goals_state");
-        if (savedState) {
-          try {
-            const state = JSON.parse(savedState);
-            const checkboxes = document.querySelectorAll(
-              'input[type="checkbox"]',
-            );
-            checkboxes.forEach((cb) => {
-              const id = cb.getAttribute("data-id");
-              if (id && state[id] !== undefined) {
-                cb.checked = state[id];
-              }
-            });
-          } catch (e) {
-            console.error("Error loading saved state", e);
-          }
+        if (savedProgress[id]) {
+          // Trigger confetti celebration!
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.8 },
+          });
         }
 
-        const savedNotes = localStorage.getItem("irson_notes");
-        if (savedNotes) {
-          document.getElementById("irson-notes").value = savedNotes;
-        }
+        loadChecklist();
       }
 
-      // Reset All Data
-      function resetAllData() {
-        if (
-          confirm(
-            "Apakah kamu yakin ingin mereset semua centang progres dan catatan?",
-          )
-        ) {
-          localStorage.removeItem("irson_goals_state");
-          localStorage.removeItem("irson_notes");
-          document
-            .querySelectorAll('input[type="checkbox"]')
-            .forEach((cb) => (cb.checked = false));
-          document.getElementById("irson-notes").value = "";
-          document
-            .querySelectorAll(".goal-interactive-card")
-            .forEach((card) => {
-              card.classList.remove(
-                "border-blue-500",
-                "bg-blue-50/30",
-                "dark:bg-blue-950/20",
-              );
-            });
-          updateProgress();
-        }
+      function updateProgressBar() {
+        const savedProgress =
+          JSON.parse(localStorage.getItem("irson_learning_progress")) || {};
+        const allKeys = [
+          ...learningItems.primary,
+          ...learningItems.secondary,
+        ].map((i) => i.id);
+        const completedCount = allKeys.filter((k) => savedProgress[k]).length;
+        const percentage = Math.round((completedCount / allKeys.length) * 100);
+
+        document.getElementById("progress-text").innerText = `${percentage}%`;
+        document.getElementById("progress-bar").style.width = `${percentage}%`;
       }
 
-      // Smooth Scroll Helper
-      function scrollToSection(sectionId) {
-        document
-          .getElementById(sectionId)
-          .scrollIntoView({ behavior: "smooth" });
+      // Affirmations Generator
+      const affirmations = [
+        "Telinga aku good listening, tubuh sehat sempurna, tinggal damai bareng papi, mami, dan Kelly.",
+        "Aku fokus menguasai Web Development, English, dan Mandarin Chinese dengan sangat baik.",
+        "Target impianku: Kerja remote di perusahaan Amerika dan tinggal di 83-45 Vietor Avenue, Elmhurst, Queens, New York.",
+        "Berobat nainai di Amerika agar nainai sehat-sehat dan panjang umur.",
+        "Beli mobil Tesla untuk jalan-jalan keliling United States bersama keluarga tercinta.",
+        "United States adalah negara maju terbaik kita, dan Indonesia adalah negara berkembang tercinta.",
+      ];
+
+      function triggerAffirmation() {
+        const randomIndex = Math.floor(Math.random() * affirmations.length);
+        document.getElementById("affirmation-text").innerText =
+          affirmations[randomIndex];
+        document.getElementById("affirmation-modal").classList.remove("hidden");
       }
+
+      function closeAffirmation() {
+        document.getElementById("affirmation-modal").classList.add("hidden");
+      }
+
+      // Initialize on load
+      window.onload = function () {
+        loadChecklist();
+      };
     </script>
   </body>
 </html>
